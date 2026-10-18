@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: oklch(97% 0.01 240);
+  --color-foreground: oklch(20% 0.05 260);
+  --color-primary: oklch(45% 0.15 250);
+  --color-primary-foreground: oklch(98% 0.005 240);
+  --color-secondary: oklch(92% 0.02 240);
+  --color-secondary-foreground: oklch(30% 0.05 260);
+  --color-accent: oklch(55% 0.12 200);
+  --color-accent-foreground: oklch(98% 0.005 240);
+  --color-success: oklch(60% 0.15 150);
+  --color-warning: oklch(75% 0.15 80);
+  --color-danger: oklch(55% 0.2 25);
+  --color-muted: oklch(92% 0.02 240);
+  --color-muted-foreground: oklch(50% 0.03 260);
+  --color-card: oklch(99% 0.005 240);
+  --color-card-foreground: oklch(20% 0.05 260);
+  --color-popover: oklch(99% 0.005 240);
+  --color-popover-foreground: oklch(20% 0.05 260);
+  --color-border: oklch(88% 0.02 240);
+  --color-input: oklch(88% 0.02 240);
+  --color-ring: oklch(45% 0.15 250);
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
