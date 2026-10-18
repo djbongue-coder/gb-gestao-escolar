@@ -146,6 +146,7 @@
 - [x] Todas as 40 páginas com router existente no backend; menu e rotas coerentes
 
 ### Pendente
-- [ ] `git init` — projecto sem controlo de versões
+- [x] `git init` + primeiro commit (6a07f76)
+- [ ] Configurar remote (GitHub) — repositório ainda é só local
 - [ ] Testar com dados reais no ambiente Manus (local não tem MySQL nem OAuth)
 - [ ] Opcional: remover módulos do template Manus sem uso (llm, dataApi, heartbeat, imageGeneration, voiceTranscription, AIChatBox, ManusDialog, Map)
