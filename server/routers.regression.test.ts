@@ -51,6 +51,12 @@ function routerKeyExists(appRouterLike: Record<string, unknown>, dotted: string)
   return true;
 }
 
+// Remove comentários (linha e bloco) antes de procurar padrões, para que um
+// comentário que DESCREVA o bug não dispare o teste — só o código conta.
+function stripComments(src: string): string {
+  return src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+}
+
 describe("integridade dos routers das páginas", () => {
   const map = getRouterMap();
 
@@ -70,7 +76,8 @@ describe("integridade dos routers das páginas", () => {
     const mapKeys = new Set(Object.keys(map));
     const problems: string[] = [];
     for (const { file, content } of readPages()) {
-      for (const m of content.matchAll(/\b(listKey|createKey|updateKey|deleteKey):\s*["']([\w.]+)["']/g)) {
+      const code = stripComments(content);
+      for (const m of code.matchAll(/\b(listKey|createKey|updateKey|deleteKey):\s*["']([\w.]+)["']/g)) {
         const [, prop, value] = m;
         const root = value.split(".")[0];
         if (!mapKeys.has(root)) {
@@ -84,7 +91,7 @@ describe("integridade dos routers das páginas", () => {
   it("o bug de /bi não volta: nenhum router usa o nome inexistente \"dashboard\"", () => {
     expect(Object.keys(map)).not.toContain("dashboard");
     for (const { file, content } of readPages()) {
-      expect(content, `${path.basename(file)} referencia o router "dashboard"`).not.toMatch(/["']dashboard["']/);
+      expect(stripComments(content), `${path.basename(file)} referencia o router "dashboard"`).not.toMatch(/["']dashboard["']/);
     }
   });
 });
