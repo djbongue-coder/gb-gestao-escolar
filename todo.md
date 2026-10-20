@@ -147,6 +147,6 @@
 
 ### Pendente
 - [x] `git init` + primeiro commit (6a07f76)
-- [ ] Configurar remote (GitHub) — repositório ainda é só local
+- [x] Remote GitHub configurado — `git@github.com:djbongue-coder/gb-gestao-escolar.git` (SSH, via chave `~/.ssh/id_ed25519_github`)
 - [ ] Testar com dados reais no ambiente Manus (local não tem MySQL nem OAuth)
 - [ ] Opcional: remover módulos do template Manus sem uso (llm, dataApi, heartbeat, imageGeneration, voiceTranscription, AIChatBox, ManusDialog, Map)
