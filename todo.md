@@ -142,8 +142,12 @@
 - [x] Remover secção duplicada "Sistema de Ensino Angola (MED)" neste ficheiro
 
 ### Verificações
-- [x] `pnpm check` sem erros · `pnpm test` 13/13 · `pnpm build` OK
+- [x] `pnpm check` sem erros · `pnpm test` 17/17 · `pnpm build` OK
 - [x] Todas as 40 páginas com router existente no backend; menu e rotas coerentes
+- [x] Teste de regressão `server/routers.regression.test.ts` — valida que cada
+      listKey/createKey/updateKey/deleteKey usado por uma página existe no
+      appRouter, e que o router "dashboard" (causa do crash de /bi) não regressa.
+      Verificado a falhar com o bug injectado e a passar limpo.
 
 ### Pendente
 - [x] `git init` + primeiro commit (6a07f76)
