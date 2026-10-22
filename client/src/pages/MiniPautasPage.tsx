@@ -199,8 +199,8 @@ export default function MiniPautasPage() {
     ];
 
     // Cabeçalho da tabela (2 linhas) — modelo 12ª1.xlsm
-    const head1 = ["Nº", "Nome do aluno", "Gênero", "Disciplina", "I TRIMESTRE", "", "", "II TRIMESTRE", "", "", "III TRIMESTRE", "", "", "MFD", "EXAME", "MFD F.", "CLASSIFICAÇÃO"];
-    const head2 = ["", "", "", "", "MAC", "NPP", "MT", "MAC", "NPP", "MT", "MAC", "NPP", "MT", "", "", "", ""];
+    const head1 = ["Nº", "Nome do aluno", "Gênero", "Disciplina", "I TRIMESTRE", "", "", "", "II TRIMESTRE", "", "", "", "III TRIMESTRE", "", "", "", "MFD", "EXAME", "MFD F.", "CLASSIFICAÇÃO"];
+    const head2 = ["", "", "", "", "MAC", "NPP", "NPT", "MT", "MAC", "NPP", "NPT", "MT", "MAC", "NPP", "NPT", "MT", "", "", "", ""];
 
     // Dados
     const dataRows: any[][] = filtered.map((row: MiniPautaRow, idx: number) => {
@@ -212,9 +212,9 @@ export default function MiniPautasPage() {
         student?.fullName || `#${row.studentId}`,
         student?.gender === "F" ? "F" : student?.gender === "M" ? "M" : "",
         subject?.name || `#${row.subjectId}`,
-        calc.mac1, calc.npp1, calc.mt1,
-        calc.mac2, calc.npp2, calc.mt2,
-        calc.mac3, calc.npp3, calc.mt3,
+        calc.mac1, calc.npp1, calc.npt1, calc.mt1,
+        calc.mac2, calc.npp2, calc.npt2, calc.mt2,
+        calc.mac3, calc.npp3, calc.npt3, calc.mt3,
         calc.mfd,
         calc.exame,
         calc.mfdFinal,
@@ -236,8 +236,10 @@ export default function MiniPautasPage() {
 
     // Larguras
     ws["!cols"] = [
-      { wch: 5 }, { wch: 32 }, { wch: 6 }, { wch: 22 }, { wch: 7 }, { wch: 7 }, { wch: 7 },
-      { wch: 7 }, { wch: 7 }, { wch: 7 }, { wch: 7 }, { wch: 7 }, { wch: 7 },
+      { wch: 5 }, { wch: 32 }, { wch: 6 }, { wch: 22 },
+      { wch: 7 }, { wch: 7 }, { wch: 7 }, { wch: 7 },
+      { wch: 7 }, { wch: 7 }, { wch: 7 }, { wch: 7 },
+      { wch: 7 }, { wch: 7 }, { wch: 7 }, { wch: 7 },
       { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 16 },
     ];
 
@@ -247,20 +249,22 @@ export default function MiniPautasPage() {
     ws["!merges"] = [
       ...official.map((_, i) => ({ s: { r: i, c: 0 }, e: { r: i, c: 16 } })),
       ...idBlock.map((_, i) => ({ s: { r: idStart + i, c: 0 }, e: { r: idStart + i, c: 16 } })),
-      { s: { r: headStart, c: 4 }, e: { r: headStart, c: 6 } },
-      { s: { r: headStart, c: 7 }, e: { r: headStart, c: 9 } },
-      { s: { r: headStart, c: 10 }, e: { r: headStart, c: 12 } },
+      { s: { r: headStart, c: 4 }, e: { r: headStart, c: 7 } },
+      { s: { r: headStart, c: 8 }, e: { r: headStart, c: 11 } },
+      { s: { r: headStart, c: 12 }, e: { r: headStart, c: 15 } },
     ];
 
     // Formatar MFD Final e CLASSIFICAÇÃO
     const firstDataRow = headStart + 2;
     dataRows.forEach((_, i) => {
       const r = firstDataRow + i;
-      const mfdCell = ws[XLSX.utils.encode_cell({ r, c: 15 })];
+      // MFD Final (col 18): azul >=10, vermelho <10
+      const mfdCell = ws[XLSX.utils.encode_cell({ r, c: 18 })];
       if (mfdCell?.v !== null && mfdCell?.v !== undefined && mfdCell.v !== "") {
-        mfdCell.s = { font: { bold: true, color: { rgb: Number(mfdCell.v) >= 10 ? "008000" : "C80000" } } } as any;
+        mfdCell.s = { font: { bold: true, color: { rgb: Number(mfdCell.v) >= 10 ? "0000FF" : "C80000" } } } as any;
       }
-      const obsCell = ws[XLSX.utils.encode_cell({ r, c: 16 })];
+      // CLASSIFICAÇÃO (col 19): verde APTO/TRANSITA, vermelho NÃO APTO/NÃO TRANSITA
+      const obsCell = ws[XLSX.utils.encode_cell({ r, c: 19 })];
       if (obsCell?.v === "APTO" || obsCell?.v === "TRANSITA") obsCell.s = { font: { bold: true, color: { rgb: "008000" } } } as any;
       else if (obsCell?.v === "NÃO APTO" || obsCell?.v === "NÃO TRANSITA") obsCell.s = { font: { bold: true, color: { rgb: "C80000" } } } as any;
     });
@@ -341,12 +345,12 @@ export default function MiniPautasPage() {
       const subject = subjects?.find((s: any) => s.id === row.subjectId);
       return [
         idx + 1,
-        student?.fullName || `#${row.studentId}`,
+        student?.fullName || `#{row.studentId}`,
         student?.gender === "F" ? "F" : student?.gender === "M" ? "M" : "",
-        subject?.name || `#${row.subjectId}`,
-        fmtNota(calc.mac1), fmtNota(calc.npp1), fmtNota(calc.mt1, 0),
-        fmtNota(calc.mac2), fmtNota(calc.npp2), fmtNota(calc.mt2, 0),
-        fmtNota(calc.mac3), fmtNota(calc.npp3), fmtNota(calc.mt3, 0),
+        subject?.name || `#{row.subjectId}`,
+        fmtNota(calc.mac1), fmtNota(calc.npp1), fmtNota(calc.npt1), fmtNota(calc.mt1, 0),
+        fmtNota(calc.mac2), fmtNota(calc.npp2), fmtNota(calc.npt2), fmtNota(calc.mt2, 0),
+        fmtNota(calc.mac3), fmtNota(calc.npp3), fmtNota(calc.npt3), fmtNota(calc.mt3, 0),
         fmtNota(calc.mfd), fmtNota(calc.exame), fmtNota(calc.mfdFinal), calc.observacao || "—",
       ];
     });
@@ -358,15 +362,15 @@ export default function MiniPautasPage() {
         { content: "Nome do aluno", rowSpan: 2 },
         { content: "Gênero", rowSpan: 2 },
         { content: "Disciplina", rowSpan: 2 },
-        { content: "I — TRIMESTRE", colSpan: 3 },
-        { content: "II — TRIMESTRE", colSpan: 3 },
-        { content: "III — TRIMESTRE", colSpan: 3 },
+        { content: "I — TRIMESTRE", colSpan: 4 },
+        { content: "II — TRIMESTRE", colSpan: 4 },
+        { content: "III — TRIMESTRE", colSpan: 4 },
         { content: "MFD", rowSpan: 2 },
         { content: "EXAME", rowSpan: 2 },
         { content: "MFD F.", rowSpan: 2 },
         { content: "CLASSIFICAÇÃO", rowSpan: 2 },
       ], [
-        "MAC", "NPP", "MT", "MAC", "NPP", "MT", "MAC", "NPP", "MT",
+        "MAC", "NPP", "NPT", "MT", "MAC", "NPP", "NPT", "MT", "MAC", "NPP", "NPT", "MT", "", "", "", "",
       ]],
       body: tableData,
       theme: "grid",
@@ -375,16 +379,17 @@ export default function MiniPautasPage() {
       alternateRowStyles: { fillColor: [240, 248, 240] },
       didParseCell: function (data: any) {
         if (data.section === "body") {
-          // MFD Final (col 13)
-          if (data.column.index === 13) {
+          // Notas (col 4 a 18): azul >=10, vermelho <10
+          const noteCols = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+          if (noteCols.includes(data.column.index)) {
             const val = Number(data.cell.raw);
             if (!isNaN(val)) {
-              data.cell.styles.textColor = val >= 10 ? [0, 128, 0] : [200, 0, 0];
+              data.cell.styles.textColor = val >= 10 ? [0, 0, 200] : [200, 0, 0];
               data.cell.styles.fontStyle = "bold";
             }
           }
-          // CLASSIFICAÇÃO (col 14)
-          if (data.column.index === 14) {
+          // CLASSIFICAÇÃO (col 19)
+          if (data.column.index === 19) {
             const obs = String(data.cell.raw);
             if (obs === "APTO" || obs === "TRANSITA") data.cell.styles.textColor = [0, 128, 0];
             else if (obs === "NÃO APTO" || obs === "NÃO TRANSITA") data.cell.styles.textColor = [200, 0, 0];
